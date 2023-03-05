@@ -1,0 +1,34 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "target": "es6",
+    "lib": [
+      "es2021",
+      "esnext.asynciterable"
+    ],
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "pretty": true,
+    "sourceMap": true,
+    "declaration": true,
+    "outDir": "./dist",
+    "allowJs": true,
+    "noEmit": false,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "importHelpers": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+  },
+  "include": [
+    "./src/**/*.ts",
+    "./index.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

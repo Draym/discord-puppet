@@ -1,0 +1,38 @@
+{
+  "name": "@d-lab/discord-puppet",
+  "version": "0.1.0",
+  "description": "Node client to interact with Discord app",
+  "author": {
+    "name": "Kevin Andres",
+    "email": "kevin@rct.ai"
+  },
+  "private": false,
+  "keywords": [
+    "dlab",
+    "sdk",
+    "discord"
+  ],
+  "homepage": "https://github.com/Draym/discord-puppet#readme",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": "https://github.com/Draym/discord-puppet/tree/main",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "publish-public": "tsc && npm publish --access public"
+  },
+  "dependencies": {
+    "puppeteer": "^19.7.2",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
+    "tslib": "^2.5.0"
+  },
+  "devDependencies": {
+    "dotenv": "^16.0.3",
+    "ts-node": "^10.9.1"
+  }
+}
