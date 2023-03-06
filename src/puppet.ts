@@ -2,10 +2,8 @@ import puppeteer from "puppeteer-extra"
 import StealthPlugin from "puppeteer-extra-plugin-stealth"
 import UserDir from "puppeteer-extra-plugin-user-data-dir"
 import {Browser, ElementHandle, Page} from "puppeteer"
-import Option from "./interfaces/option.interface"
 import * as console from "console"
-import Message from "./interfaces/message.interface"
-import Ids from "./interfaces/ids.interface"
+import {Message, Ids, Option} from "./interfaces"
 
 export default class Puppet {
     protected browser: Browser

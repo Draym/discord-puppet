@@ -1,6 +1,5 @@
 import Puppet from "./puppet"
-import Option from "./interfaces/option.interface"
-import Message from "./interfaces/message.interface"
+import {Option, Message} from "./interfaces"
 import {ElementHandle} from "puppeteer"
 
 export default class MidjourneyPuppet extends Puppet {
