@@ -155,7 +155,7 @@ export default class Puppet {
         return await jsProperty?.jsonValue()
     }
 
-    private async login(): Promise<boolean> {
+    async login(): Promise<boolean> {
         if (await this.isLoggedIn()) {
             return true
         }
