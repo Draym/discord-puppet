@@ -1,7 +1,7 @@
 {
   "name": "@d-lab/discord-puppet",
   "version": "0.1.0",
-  "description": "Node client to interact with Discord app",
+  "description": "NodeJs client to interact with Discord app as a puppet.",
   "author": {
     "name": "Kevin Andres",
     "email": "kevin@rct.ai"
