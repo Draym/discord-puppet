@@ -1,7 +1,7 @@
 import 'dotenv/config'
-import MidjourneyPuppet from "../src/midjourney.puppet"
 import Option from "../src/interfaces/option.interface"
 import options from "../src/utils/options"
+import MidjourneyPuppet from "../src/midjourney.puppet"
 
 /** TEST script that execute midjourney puppet **/
 async function execute(words: string[]) {
