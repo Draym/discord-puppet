@@ -3,4 +3,7 @@ export default interface Option {
     headless: boolean
     username: string
     password: string
+    userDataDir?: string
+    waitElement: number
+    waitLogin: number
 }
