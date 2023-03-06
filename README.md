@@ -22,29 +22,6 @@ sudo apt install libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libgbm1 libasou
 
 You will find different basic actions for Discord under the Puppet class. You can use it to create your own puppet, such as the Midjourney Puppet described below.
 
-Interface
-```ts
-interface Puppet {
-    start(serverId?: string)
-    shutdown()
-    goToMain()
-    gotToChannel(serverId: string, channelId: string)
-    goToServer(serverId: string)
-    clickChannel(channel: string)
-    clickServer(server: string)
-    sendMessage(message: string)
-    sendCommand(command: string, args?: string)
-    getLastMsgRaw()
-    getLastMsg()
-    parseMessage(li: ElementHandle)
-    parseIds(id: string): Ids
-    getProperty(elem: ElementHandle | null, property: string): Promise<string | null>
-    login(): Promise<boolean>
-    isLoggedIn(): Promise<boolean>
-    waitLogin(): Promise<boolean>
-    waitElement(requiredEval: string, validate?: (ElementHandle) => Promise<boolean>)
-}
-```
 #### Example
 ```ts
 import {Client as Puppet} from "@d-lab/discord-puppet"
@@ -53,11 +30,17 @@ const config: Option = options(
     process.env.DISCORD_USERNAME,
     process.env.DISCORD_PASSWORD
 )
+/** Setup Puppet config and pluggin, it uses StealthPlugin and UserDataDir */
 const puppet = new Puppet(config)
+
+/** Start Puppet opens a browser and a new Tab, handle Login then redirect to specified server or default one*/
 await puppet.start()
+
 await puppet.clickServer("My Server")
 await puppet.clickChannel("my-channel")
 await puppet.sendMessage("Hello world!")
+
+/** close headless browser */
 await puppet.shutdown()
 ```
 
@@ -66,6 +49,20 @@ await puppet.shutdown()
 This library has been initially built to create a puppet for the MidJourney AI Art generation. This service is only available on Discord as a bot for now.
 Using this puppet you can easily generate AI art using the puppet.imagine() method on the server side.
 
+#### Prerequisite
+This Puppet is using the MidJourney Bot, you will need to add it to your server. You can find the bot on the [MidJourney Website](https://www.midjourney.com/).
+
+- Join MidJourney Discord
+- If your discord user never used MidJourney before
+  - run any command on MidJourney bot (such as imagine)
+  - accept their Terms of Service
+  - your user is setup!
+- Create a new Personal Server on Discord: for example 'My Art' [steps](https://media.discordapp.net/attachments/1074234231175262248/1082211527790178384/image.png?width=1440&height=642)
+- Add the bot to your personal server from MidJourney server [steps](https://media.discordapp.net/attachments/1074234231175262248/1082210468476764241/image.png?width=922&height=663)
+- Add a new channel: for example 'all-art'
+- You're good to go!
+
+#### Example
 ```ts
 import {Client as Puppet} from "@d-lab/discord-puppet"
 
