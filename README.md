@@ -77,7 +77,7 @@ await puppet.clickServer("My Art")
 await puppet.clickChannel("all-art")
 
 /** Get your MidJourney account status */
-const msg1 = await client.info()
+const msg1 = await puppet.info()
 console.log("MJY account: ", msg1)
 
 /** Ask MidJourney to generate an image */
@@ -87,6 +87,6 @@ console.log("MJY account: ", msg1)
 function loading(url: string) {
     console.log("Loading ~ ", url)
 }
-const msg2 = await client.imagine(`Your Imagine command (check MidJourney prompt guides)`, loading)
+const msg2 = await puppet.imagine(`Your Imagine command (check MidJourney prompt guides)`, loading)
 console.log("MJY image: ", msg2)
 ```
