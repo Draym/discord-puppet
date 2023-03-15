@@ -20,6 +20,7 @@ export default class Puppet {
         this.browser = await puppeteer.launch({
             headless: this.options.headless,
             userDataDir: this.options.userDataDir,
+            args: this.options.args
         })
         this.page = await this.browser.newPage()
         if (serverId != null) {

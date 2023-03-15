@@ -1,6 +1,6 @@
 import Option from "../interfaces/option.interface"
 
-export default function options(username: string, password: string, userDataDir?: string, logs = true, headless = false, waitLogin = 10, waitElement = 100): Option {
+export default function options(username: string, password: string, args: string[] = [], userDataDir?: string, logs = true, headless = false, waitLogin = 10, waitElement = 100): Option {
     return {
         username: username,
         password: password,
@@ -8,6 +8,7 @@ export default function options(username: string, password: string, userDataDir?
         logs: logs,
         headless: headless,
         waitLogin: waitLogin,
-        waitElement: waitElement
+        waitElement: waitElement,
+        args: args
     }
 }

@@ -8,6 +8,7 @@ async function execute(words: string[]) {
     const config: Option = options(
         process.env.DISCORD_USERNAME,
         process.env.DISCORD_PASSWORD,
+        [],
         process.env.DISCORD_USER_DATA_DIR
     )
     const client = new MidjourneyPuppet(config)
