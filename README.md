@@ -87,6 +87,6 @@ console.log("MJY account: ", msg1)
 function loading(url: string) {
     console.log("Loading ~ ", url)
 }
-const msg2 = await puppet.imagine(`Your Imagine command (check MidJourney prompt guides)`, loading)
+const msg2 = await puppet.imagine(`Your Imagine prompt (check MidJourney prompt guides)`, loading)
 console.log("MJY image: ", msg2)
 ```

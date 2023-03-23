@@ -115,6 +115,14 @@ export default class Puppet {
         return this.parseMessage(li)
     }
 
+    async getMessage(messageId: string): Promise<Message> {
+        const li = await this.page.$(`li[id="${messageId}"]`)
+        if (li == null) {
+            throw new Error(`Message ${messageId} not found`)
+        }
+        return await this.parseMessage(li)
+    }
+
     async parseMessage(li: ElementHandle): Promise<Message> {
         const liId = await this.getProperty(li, 'id')
         const {channelId, messageId} = this.parseIds(liId)
