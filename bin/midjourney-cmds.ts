@@ -16,19 +16,20 @@ async function execute(words: string[]) {
     await client.start()
     await client.clickServer("My AI Art")
     await client.clickChannel("general")
-    const msg = await client.getLastMsg()
-    console.log("MSG: ", msg)
+
+    const msg1 = await client.info()
+    console.log("Midjourney Account info: ", msg1)
 
     function loading(url: string) {
         console.log("LOADING: ", url)
     }
-
-    const msg2 = await client.enlarge("chat-messages-1074225966123057165-1086532268081815612", EnlargeType.U1, loading)
-    //const msg2 = await client.enlarge("chat-messages-1074225966123057165-1086535947195260928", EnlargeType.V2, loading)
-    console.log("MSG 2: ", msg2)
+    const msg2 = await client.imagine(words.join(" "), loading)
+    console.log("Images: ", msg2)
+    const msg3 = await client.enlarge(msg2.messageId, EnlargeType.U1, loading)
+    console.log("Enlarged U1 image: ", msg3)
 }
 
-const words = ["galaxy", "kid", "house", "stars", "war"]
+const words = ["galaxy", "kid", "house", "stars", "travel"]
 execute(words).then(res => {
     console.log("done")
 })
