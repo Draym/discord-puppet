@@ -2,6 +2,7 @@ import 'dotenv/config'
 import Option from "../src/interfaces/option.interface"
 import options from "../src/utils/options"
 import MidjourneyPuppet from "../src/midjourney.puppet"
+import {EnlargeType} from "../src/enums"
 
 /** TEST script that execute midjourney puppet **/
 async function execute(words: string[]) {
@@ -14,15 +15,16 @@ async function execute(words: string[]) {
     const client = new MidjourneyPuppet(config)
     await client.start()
     await client.clickServer("My AI Art")
-    await client.clickChannel("words-tell-art")
-    const msg = await client.info()
+    await client.clickChannel("general")
+    const msg = await client.getLastMsg()
     console.log("MSG: ", msg)
 
     function loading(url: string) {
         console.log("LOADING: ", url)
     }
 
-    const msg2 = await client.imagine(`cyberpunk, ${words.join(" ")}, film noir, colourful, minimal environment`, loading)
+    const msg2 = await client.enlarge("chat-messages-1074225966123057165-1086532268081815612", EnlargeType.U1, loading)
+    //const msg2 = await client.enlarge("chat-messages-1074225966123057165-1086535947195260928", EnlargeType.V2, loading)
     console.log("MSG 2: ", msg2)
 }
 

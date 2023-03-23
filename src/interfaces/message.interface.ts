@@ -1,4 +1,4 @@
-import Action from "./action.interface"
+import {ElementHandle} from "puppeteer"
 
 export default interface Message {
     channelId: string
@@ -8,5 +8,5 @@ export default interface Message {
     lazyImageUrl?: string
 
     article?: string
-    actions: Action[]
+    actions: {[key: string]: ElementHandle}
 }

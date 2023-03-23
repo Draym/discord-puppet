@@ -129,7 +129,15 @@ export default class Puppet {
         if (article != null) {
             articleContent = await li.$eval('div[class*="embedDescription"]', it => it.textContent)
         }
-        const actions = []
+        const accessories = await li.$('div[id*="message-accessories"]')
+        const divs = await accessories.$$('button');
+        const actions = {};
+        for (const div of divs) {
+            const textContent = await div.evaluate(el => el.textContent)
+            if (textContent.startsWith('U') || textContent.startsWith('V')) {
+                actions[textContent] = div
+            }
+        }
         return {
             channelId: channelId,
             messageId: messageId,
