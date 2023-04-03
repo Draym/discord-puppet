@@ -64,7 +64,7 @@ This Puppet is using the MidJourney Bot, you will need to add it to your server.
 
 #### Example
 ```ts
-import {Client as Puppet} from "@d-lab/discord-puppet"
+import {MidjourneyPuppet} from "@d-lab/discord-puppet"
 
 const config: Option = options(
     process.env.DISCORD_USERNAME,
