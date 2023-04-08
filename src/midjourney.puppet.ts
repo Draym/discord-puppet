@@ -33,6 +33,7 @@ export default class MidjourneyPuppet extends Puppet {
             return it != null && it.endsWith(".png")
         }
         await this.waitElement('a[data-role="img"]', validate.bind(this))
+        await this.waitExecution()
         return this.getLastMsg()
     }
 
