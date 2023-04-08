@@ -85,7 +85,7 @@ export default class MidjourneyPuppet extends Puppet {
      */
     async executeImageAction(action: ElementHandle, loading?: (string) => void) {
         await action.click()
-        await (new Promise(r => setTimeout(r, 2000)))
+        await this.waitExecution(2)
         async function validate(elem: ElementHandle): Promise<boolean> {
             const it = await this.getProperty(elem, 'href')
             if (loading) {

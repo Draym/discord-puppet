@@ -29,7 +29,8 @@ export default class Puppet {
             await this.goToMain()
         }
         await this.login()
-        await (new Promise(r => setTimeout(r, 1000)))
+        await this.waitExecution()
+        await this.closeAllPopups()
     }
 
     async shutdown() {
@@ -39,7 +40,7 @@ export default class Puppet {
     async goToMain() {
         this.log(`[Main]: go`)
         await this.page.goto('https://discord.com/app', {waitUntil: 'load'})
-        await (new Promise(r => setTimeout(r, 1000)))
+        await this.waitExecution()
         this.log(`[Main]: done`)
     }
 
@@ -48,7 +49,7 @@ export default class Puppet {
         await this.page.goto(`https://discord.com/channels/${serverId}/${channelId}`, {waitUntil: 'load'})
         this.log(`channel[${serverId}, ${channelId}]: navigate`)
         await this.page.waitForSelector(`ol[data-list-id="chat-messages"]`, {visible: true})
-        await (new Promise(r => setTimeout(r, 1000)))
+        await this.waitExecution()
         this.log(`channel[${serverId}, ${channelId}]: done`)
     }
 
@@ -57,7 +58,7 @@ export default class Puppet {
         await this.page.goto(`https://discord.com/channels/${serverId}`, {waitUntil: 'load'})
         this.log(`server[${serverId}]: navigate`)
         await this.page.waitForSelector(`div[aria-label="Servers"]`, {visible: true})
-        await (new Promise(r => setTimeout(r, 1000)))
+        await this.waitExecution()
         this.log(`server[${serverId}]: done`)
     }
 
@@ -91,16 +92,16 @@ export default class Puppet {
         this.log(`send command{${command}: ${args}}`)
         await this.page.click('[data-slate-editor="true"]')
         await this.page.keyboard.press('/')
-        await (new Promise(r => setTimeout(r, 1000)))
+        await this.waitExecution()
         await this.page.type('[data-slate-editor="true"]', `${command}`)
-        await (new Promise(r => setTimeout(r, 2000)))
+        await this.waitExecution(2)
         await this.page.keyboard.press('Enter')
-        await (new Promise(r => setTimeout(r, 500)))
+        await this.waitExecution()
         if (args != null) {
             await this.page.type('[data-slate-editor="true"]', `${args}`)
         }
         await this.page.keyboard.press('Enter')
-        await (new Promise(r => setTimeout(r, 1000)))
+        await this.waitExecution()
     }
 
     async getLastMsgRaw(): Promise<ElementHandle> {
@@ -181,7 +182,7 @@ export default class Puppet {
             await this.page.click('button[type="submit"]')
             this.log("[login]: submit")
             await this.page.waitForNavigation({waitUntil: 'load'})
-            //await (new Promise(r => setTimeout(r, 1000)))
+            await this.waitExecution()
         } catch (e) {
             this.log("[login]: fail=", e)
         }
@@ -210,7 +211,7 @@ export default class Puppet {
             if (isLoggedIn || tryCount >= this.options.waitLogin) {
                 break
             }
-            await (new Promise(r => setTimeout(r, 1000)))
+            await this.waitExecution()
         }
         return isLoggedIn
     }
@@ -230,7 +231,7 @@ export default class Puppet {
             if (isValid || tryCount >= this.options.waitElement) {
                 break
             }
-            await (new Promise(r => setTimeout(r, 1000)))
+            await this.waitExecution()
         }
     }
 
@@ -239,5 +240,9 @@ export default class Puppet {
             const time = new Date().toISOString()
             console.log(message, ...args, time)
         }
+    }
+
+    protected async waitExecution(ratio = 1) {
+        return await (new Promise(r => setTimeout(r, this.options.waitExecution * ratio)))
     }
 }

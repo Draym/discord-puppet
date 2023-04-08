@@ -6,5 +6,6 @@ export default interface Option {
     userDataDir?: string
     waitElement: number
     waitLogin: number
+    waitExecution: number
     args: string[]
 }
