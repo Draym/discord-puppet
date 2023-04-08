@@ -37,6 +37,14 @@ export default class Puppet {
         await this.browser.close()
     }
 
+    async closeAllPopups() {
+        const btns = await this.page.$$('button[aria-label="Close"]')
+        for (const btn of btns) {
+            await btn.click()
+            await this.waitExecution()
+        }
+    }
+
     async goToMain() {
         this.log(`[Main]: go`)
         await this.page.goto('https://discord.com/app', {waitUntil: 'load'})
