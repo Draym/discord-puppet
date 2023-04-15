@@ -4,6 +4,7 @@ import UserDir from "puppeteer-extra-plugin-user-data-dir"
 import {Browser, ElementHandle, Page} from "puppeteer"
 import * as console from "console"
 import {Message, Ids, Option} from "./interfaces"
+import clickByText from "./utils/click-by-text"
 
 export default class Puppet {
     protected browser: Browser
@@ -29,7 +30,7 @@ export default class Puppet {
             await this.goToMain()
         }
         await this.login()
-        await this.waitExecution()
+        await this.waitExecution(2)
         await this.closeAllPopups()
     }
 
@@ -184,15 +185,18 @@ export default class Puppet {
             return true
         }
         try {
-            this.log("[login]: type")
+            const onLoggingPage = await this.page.$('div[class*="mainLoginContainer"]')
+            if (!onLoggingPage) {
+                await clickByText(this.page, "div", "Log in")
+                await this.waitExecution(2)
+            }
             await this.page.type('input[name="email"]', this.options.username)
             await this.page.type('input[name="password"]', this.options.password)
             await this.page.click('button[type="submit"]')
-            this.log("[login]: submit")
             await this.page.waitForNavigation({waitUntil: 'load'})
             await this.waitExecution()
         } catch (e) {
-            this.log("[login]: fail=", e)
+            this.log("[login]: fail >", e)
         }
         const isLoggedIn = await this.waitLogin()
         if (isLoggedIn) {
