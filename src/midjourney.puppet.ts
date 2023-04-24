@@ -1,5 +1,5 @@
 import Puppet from "./puppet"
-import {Option, Message} from "./interfaces"
+import {Message, Option} from "./interfaces"
 import {ElementHandle} from "puppeteer"
 import {EnlargeType, VariationType} from "./enums"
 
@@ -24,7 +24,9 @@ export default class MidjourneyPuppet extends Puppet {
      * @param loading you will be notified each time the image loading reach a new step
      */
     async imagine(prompt: string, loading?: (string) => void): Promise<Message> {
+        const previous = await this.getLastMsg()
         await this.sendCommand("imagine", `${prompt}`)
+
         async function validate(elem: ElementHandle): Promise<boolean> {
             const it = await this.getProperty(elem, 'href')
             if (loading) {
@@ -34,7 +36,14 @@ export default class MidjourneyPuppet extends Puppet {
         }
         await this.waitElement('a[data-role="img"]', validate.bind(this))
         await this.waitExecution()
-        return this.getLastMsg()
+        const final = await this.getLastMsg()
+        if (final.messageId === previous.messageId) {
+            throw new Error("The image was not generated")
+        }
+        if (!final.imageUrl) {
+            throw new Error("The image was not generated")
+        }
+        return final
     }
 
     /**
@@ -48,7 +57,14 @@ export default class MidjourneyPuppet extends Puppet {
         if (message.actions[option] == null) {
             throw new Error(`Option ${option} not found`)
         }
-        return this.executeImageAction(message.actions[option], loading)
+        const final = await this.executeImageAction(message.actions[option], loading)
+        if (final.messageId === message.messageId) {
+            throw new Error("The image was not enlarged")
+        }
+        if (!final.imageUrl) {
+            throw new Error("The image was not generated")
+        }
+        return final
     }
 
     /**
@@ -62,7 +78,14 @@ export default class MidjourneyPuppet extends Puppet {
         if (message.actions[option] == null) {
             throw new Error(`Option ${option} not found`)
         }
-        return this.executeImageAction(message.actions[option], loading)
+        const final = await this.executeImageAction(message.actions[option], loading)
+        if (final.messageId === message.messageId) {
+            throw new Error("The image was not varied")
+        }
+        if (!final.imageUrl) {
+            throw new Error("The image was not generated")
+        }
+        return final
     }
 
     /**
@@ -72,11 +95,18 @@ export default class MidjourneyPuppet extends Puppet {
      * @param loading you will be notified each time the image loading reach a new step
      */
     async imagineLarge(prompt: string, option: EnlargeType, loading?: (string) => void) {
-        const resp = await this.imagine(prompt)
-        if (resp.actions[option] == null) {
+        const image = await this.imagine(prompt)
+        if (image.actions[option] == null) {
             throw new Error(`Option ${option} not found`)
         }
-        return this.executeImageAction(resp.actions[option], loading)
+        const enlarged = await this.executeImageAction(image.actions[option], loading)
+        if (enlarged.messageId === image.messageId) {
+            throw new Error("The image was not enlarged")
+        }
+        if (!enlarged.imageUrl) {
+            throw new Error("The image was not generated")
+        }
+        return enlarged
     }
 
     /**
@@ -87,6 +117,7 @@ export default class MidjourneyPuppet extends Puppet {
     async executeImageAction(action: ElementHandle, loading?: (string) => void) {
         await action.click()
         await this.waitExecution(2)
+
         async function validate(elem: ElementHandle): Promise<boolean> {
             const it = await this.getProperty(elem, 'href')
             if (loading) {
@@ -94,6 +125,7 @@ export default class MidjourneyPuppet extends Puppet {
             }
             return it != null && it.endsWith(".png")
         }
+
         await this.waitElement('a[data-role="img"]', validate.bind(this))
         return this.getLastMsg()
     }
