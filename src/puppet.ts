@@ -126,7 +126,7 @@ export default class Puppet {
     }
 
     async getMessage(messageId: string): Promise<Message> {
-        const li = await this.page.$(`li[id="${messageId}"]`)
+        const li = await this.page.$(`li[id$="${messageId}"]`)
         if (li == null) {
             throw new Error(`Message ${messageId} not found`)
         }
