@@ -110,6 +110,27 @@ export default class MidjourneyPuppet extends Puppet {
     }
 
     /**
+     * Generate an image with the given prompt and generate an enlarged variation with the given option
+     * @param prompt a list of words or the description of the image you want
+     * @param option midjourney will create 4 images, you can enlarge a variation of those
+     * @param loading you will be notified each time the image loading reach a new step
+     */
+    async imagineVariant(prompt: string, option: VariationType, loading?: (string) => void) {
+        const image = await this.imagine(prompt)
+        if (image.actions[option] == null) {
+            throw new Error(`Option ${option} not found`)
+        }
+        const enlarged = await this.executeImageAction(image.actions[option], loading)
+        if (enlarged.messageId === image.messageId) {
+            throw new Error("The image didn't produce an enlarged variation")
+        }
+        if (!enlarged.imageUrl) {
+            throw new Error("The image was not generated")
+        }
+        return enlarged
+    }
+
+    /**
      * Execute a given Image action (U1<>U4, V1<>V4) and wait for the image to be loaded
      * @param action Based on the resp.actions[] from imagine()
      * @param loading you will be notified each time the image loading reach a new step
