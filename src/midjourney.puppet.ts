@@ -95,7 +95,7 @@ export default class MidjourneyPuppet extends Puppet {
      * @param loading you will be notified each time the image loading reach a new step
      */
     async imagineLarge(prompt: string, option: EnlargeType, loading?: (string) => void) {
-        const image = await this.imagine(prompt)
+        const image = await this.imagine(prompt, loading)
         if (image.actions[option] == null) {
             throw new Error(`Option ${option} not found`)
         }
@@ -116,7 +116,7 @@ export default class MidjourneyPuppet extends Puppet {
      * @param loading you will be notified each time the image loading reach a new step
      */
     async imagineVariant(prompt: string, option: VariationType, loading?: (string) => void) {
-        const image = await this.imagine(prompt)
+        const image = await this.imagine(prompt, loading)
         if (image.actions[option] == null) {
             throw new Error(`Option ${option} not found`)
         }
