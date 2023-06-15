@@ -8,7 +8,8 @@ export default function options(username: string,
                                 headless = false,
                                 waitLogin = 10,
                                 waitElement = 1000,
-                                waitExecution = 1000): Option {
+                                waitExecution = 1000,
+                                ignoreDefaultArgs = false): Option {
     return {
         username: username,
         password: password,
@@ -18,6 +19,7 @@ export default function options(username: string,
         waitLogin: waitLogin,
         waitElement: waitElement,
         waitExecution: waitExecution,
-        args: args
+        args: args,
+        ignoreDefaultArgs: ignoreDefaultArgs
     }
 }

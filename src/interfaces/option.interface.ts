@@ -8,4 +8,5 @@ export default interface Option {
     waitLogin: number
     waitExecution: number
     args: string[]
+    ignoreDefaultArgs: boolean
 }
