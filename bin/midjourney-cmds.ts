@@ -3,7 +3,7 @@ import Option from "../src/interfaces/option.interface"
 import {buildOptions} from "../src/utils/options"
 import MidjourneyPuppet from "../src/midjourney.puppet"
 import {EnlargeType} from "../src/enums"
-import {Language} from "../index";
+import Language from "../src/enums/language";
 
 /** TEST script that execute midjourney puppet **/
 async function execute(words: string[]) {
@@ -26,7 +26,7 @@ async function execute(words: string[]) {
     }
     const msg2 = await client.imagine(words.join(" "), loading)
     console.log("Images: ", msg2)
-    const msg3 = await client.imageEnlarge(msg2.messageId, EnlargeType.U1, loading)
+    const msg3 = await client.imageEnlarge(msg2.messageId, EnlargeType.U3, loading)
     console.log("Enlarged U1 image: ", msg3)
 }
 
