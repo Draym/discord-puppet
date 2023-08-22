@@ -57,7 +57,7 @@ export default class MidjourneyPuppet extends Puppet {
         if (message.actions[option] == null) {
             throw new Error(`Option ${option} not found`)
         }
-        const final = await this.executeImageAction(message.actions[option], loading)
+        const final = await this.executeImageAction(message.actions[option], message.imageUrl, loading)
         if (final.messageId === message.messageId) {
             throw new Error("The image was not enlarged")
         }
@@ -78,7 +78,7 @@ export default class MidjourneyPuppet extends Puppet {
         if (message.actions[option] == null) {
             throw new Error(`Option ${option} not found`)
         }
-        const final = await this.executeImageAction(message.actions[option], loading)
+        const final = await this.executeImageAction(message.actions[option], message.imageUrl, loading)
         if (final.messageId === message.messageId) {
             throw new Error("The image was not varied")
         }
@@ -99,7 +99,7 @@ export default class MidjourneyPuppet extends Puppet {
         if (image.actions[option] == null) {
             throw new Error(`Option ${option} not found`)
         }
-        const enlarged = await this.executeImageAction(image.actions[option], loading)
+        const enlarged = await this.executeImageAction(image.actions[option], image.imageUrl, loading)
         if (enlarged.messageId === image.messageId) {
             throw new Error("The image was not enlarged")
         }
@@ -120,7 +120,7 @@ export default class MidjourneyPuppet extends Puppet {
         if (image.actions[option] == null) {
             throw new Error(`Option ${option} not found`)
         }
-        const enlarged = await this.executeImageAction(image.actions[option], loading)
+        const enlarged = await this.executeImageAction(image.actions[option], image.imageUrl, loading)
         if (enlarged.messageId === image.messageId) {
             throw new Error("The image didn't produce an enlarged variation")
         }
@@ -131,20 +131,20 @@ export default class MidjourneyPuppet extends Puppet {
     }
 
     /**
-     * Execute a given Image action (U1<>U4, V1<>V4) and wait for the image to be loaded
+     * Execute a given Image action (U1<>U4, V1<>V4) and wait for the new image to be loaded
      * @param action Based on the resp.actions[] from imagine()
+     * @param parentUrl the url of the parent image that is being enlarged
      * @param loading you will be notified each time the image loading reach a new step
      */
-    async executeImageAction(action: ElementHandle, loading?: (string) => void) {
+    async executeImageAction(action: ElementHandle, parentUrl?: string, loading?: (string) => void) {
         await action.click()
-        await this.waitExecution(2)
 
         async function validate(elem: ElementHandle): Promise<boolean> {
             const it = await this.getProperty(elem, 'href')
             if (loading) {
                 loading(it)
             }
-            return it != null && it.endsWith(".png")
+            return it != null && it.endsWith(".png") && it !== parentUrl
         }
 
         await this.waitElement('a[data-role="img"]', validate.bind(this))
