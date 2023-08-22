@@ -5,6 +5,7 @@ import {Browser, ElementHandle, Page} from "puppeteer"
 import * as console from "console"
 import {Message, Ids, Option} from "./interfaces"
 import clickByText from "./utils/click-by-text"
+import {Label} from "./utils/language-pack";
 
 export default class Puppet {
     protected browser: Browser
@@ -15,6 +16,10 @@ export default class Puppet {
         puppeteer.use(StealthPlugin())
         puppeteer.use(UserDir())
         this.options = options
+    }
+
+    label(label: Label): string {
+        return this.options.language.value(label)
     }
 
     async start(serverId?: string) {
@@ -40,7 +45,7 @@ export default class Puppet {
     }
 
     async closeAllPopups() {
-        const btns = await this.page.$$('button[aria-label="Close"]')
+        const btns = await this.page.$$(`button[aria-label="${this.label(Label.Close)}"]`)
         for (const btn of btns) {
             await btn.click()
             await this.waitExecution()
@@ -67,7 +72,7 @@ export default class Puppet {
         this.log(`server[${serverId}]: go`)
         await this.page.goto(`https://discord.com/channels/${serverId}`, {waitUntil: 'load'})
         this.log(`server[${serverId}]: navigate`)
-        await this.page.waitForSelector(`div[aria-label="Servers"]`, {visible: true})
+        await this.page.waitForSelector(`div[aria-label="${this.label(Label.Servers)}"]`, {visible: true})
         await this.waitExecution()
         this.log(`server[${serverId}]: done`)
     }
@@ -83,11 +88,11 @@ export default class Puppet {
 
     async clickServer(server: string) {
         this.log(`server[${server}]: click`)
-        await this.page.waitForSelector(`div[aria-label="Servers"]`, {visible: true})
+        await this.page.waitForSelector(`div[aria-label="${this.label(Label.Servers)}"]`, {visible: true})
         await this.page.waitForSelector(`div[data-dnd-name="${server}"]`, {visible: true})
         await this.page.click(`div[data-dnd-name="${server}"]`)
         this.log(`server[${server}]: navigation`)
-        await this.page.waitForSelector(`ul[aria-label="Channels"]`, {visible: true})
+        await this.page.waitForSelector(`ul[aria-label="${this.label(Label.Channels)}"]`, {visible: true})
         this.log(`server[${server}]: done`)
     }
 

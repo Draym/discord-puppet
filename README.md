@@ -27,13 +27,13 @@ described below.
 #### Example
 
 ```ts
-import {Client as Puppet} from "@d-lab/discord-puppet"
+import {Puppet, options} from "@d-lab/discord-puppet"
 
 const config: Option = options(
     process.env.DISCORD_USERNAME,
     process.env.DISCORD_PASSWORD
 )
-/** Setup Puppet config and pluggin, it uses StealthPlugin and UserDataDir */
+/** Setup Puppet config and pluggins */
 const puppet = new Puppet(config)
 
 /** Start Puppet opens a browser and a new Tab, handle Login then redirect to specified server or default one*/
@@ -45,6 +45,29 @@ await puppet.sendMessage("Hello world!")
 
 /** close headless browser */
 await puppet.shutdown()
+```
+
+### I18N support
+Discord use different label in the code based on your language settings. You can specify the language you want to use in the config constructor.
+For now only English and French are set up, but no worries there are only 3 labels to translate.
+
+```ts
+import {Puppet, buildOptions, Language, LanguagePack} from "@d-lab/discord-puppet"
+
+const frLanguage: LanguagePack = new LanguagePack("fr", {
+  "servers": "Serveurs",
+  "channels": "Salons",
+  "close": "Fermer"
+})
+
+const config: Option = buildOptions({
+  username: process.env.DISCORD_USERNAME,
+  password: process.env.DISCORD_PASSWORD,
+  language: frLanguage
+  //language: Language.EN
+})
+/** Setup Puppet config and pluggins */
+const puppet = new Puppet(config)
 ```
 
 ## MidJourney Puppet
@@ -62,7 +85,7 @@ the [MidJourney Website](https://www.midjourney.com/).
 - If your discord user never used MidJourney before
     - run any command on MidJourney bot (such as imagine)
     - accept their Terms of Service
-    - your user is setup!
+    - your user is set up!
 - Create a new Personal Server on Discord: for example 'My
   Art' [steps](https://media.discordapp.net/attachments/1074234231175262248/1082211527790178384/image.png?width=1440&height=642)
 - Add the bot to your personal server from MidJourney
@@ -73,13 +96,11 @@ the [MidJourney Website](https://www.midjourney.com/).
 #### Example
 
 ```ts
-import {MidjourneyPuppet} from "@d-lab/discord-puppet"
+import {MidjourneyPuppet, options} from "@d-lab/discord-puppet"
 
 const config: Option = options(
     process.env.DISCORD_USERNAME,
-    process.env.DISCORD_PASSWORD,
-    [],
-    process.env.DISCORD_USER_DATA_DIR
+    process.env.DISCORD_PASSWORD
 )
 const puppet = new MidjourneyPuppet(config)
 await puppet.start()

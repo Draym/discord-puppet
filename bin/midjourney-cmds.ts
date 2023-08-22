@@ -1,17 +1,18 @@
 import 'dotenv/config'
 import Option from "../src/interfaces/option.interface"
-import options from "../src/utils/options"
+import {buildOptions} from "../src/utils/options"
 import MidjourneyPuppet from "../src/midjourney.puppet"
 import {EnlargeType} from "../src/enums"
+import {Language} from "../index";
 
 /** TEST script that execute midjourney puppet **/
 async function execute(words: string[]) {
-    const config: Option = options(
-        process.env.DISCORD_USERNAME,
-        process.env.DISCORD_PASSWORD,
-        [],
-        process.env.DISCORD_USER_DATA_DIR
-    )
+    const config: Option = buildOptions({
+        username: process.env.DISCORD_USERNAME,
+        password: process.env.DISCORD_PASSWORD,
+        userDataDir: process.env.DISCORD_USER_DATA_DIR,
+        language: Language.EN
+    })
     const client = new MidjourneyPuppet(config)
     await client.start()
     await client.clickServer("My AI Art")
