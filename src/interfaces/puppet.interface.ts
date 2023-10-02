@@ -1,5 +1,6 @@
 import {ElementHandle} from "puppeteer"
 import Ids from "./ids.interface"
+import {ValidateFn} from "../types/callback";
 
 export default interface PuppetInterface {
     start(serverId?: string)
@@ -19,5 +20,5 @@ export default interface PuppetInterface {
     login(): Promise<boolean>
     isLoggedIn(): Promise<boolean>
     waitLogin(): Promise<boolean>
-    waitElement(requiredEval: string, validate?: (ElementHandle) => Promise<boolean>)
+    waitElement(requiredEval: string, validate?: ValidateFn)
 }
