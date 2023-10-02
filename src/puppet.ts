@@ -6,6 +6,7 @@ import * as console from "console"
 import {Message, Ids, Option} from "./interfaces"
 import clickByText from "./utils/click-by-text"
 import {Label} from "./utils/language-pack";
+import {ValidateFn} from "./types/callback";
 
 export default class Puppet {
     protected browser: Browser
@@ -234,7 +235,7 @@ export default class Puppet {
         return isLoggedIn
     }
 
-    async waitElement(requiredEval: string, validate?: (ElementHandle) => Promise<boolean>) {
+    async waitElement(requiredEval: string, validate?: ValidateFn) {
         let tryCount = 0
 
         while (tryCount < this.options.waitElement) {

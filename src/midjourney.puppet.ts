@@ -2,6 +2,7 @@ import Puppet from "./puppet"
 import {Message, Option} from "./interfaces"
 import {ElementHandle} from "puppeteer"
 import {EnlargeType, VariationType} from "./enums"
+import {LoadingFn} from "./types/callback";
 
 export default class MidjourneyPuppet extends Puppet {
 
@@ -19,22 +20,32 @@ export default class MidjourneyPuppet extends Puppet {
     }
 
     /**
-     * Request the generation of an image on Midjourney using your prompt
-     * @param prompt a list of words or the description of the image you want
+     * Validate if the image is ready and properly generated
      * @param loading you will be notified each time the image loading reach a new step
+     * @param previousImageUrl the url of the previous image, to avoid getting the same image twice on network lags
      */
-    async imagine(prompt: string, loading?: (string) => void): Promise<Message> {
-        const previous = await this.getLastMsg()
-        await this.sendCommand("imagine", `${prompt}`)
-
-        async function validate(elem: ElementHandle): Promise<boolean> {
+    protected validateImagineTask = (loading?: LoadingFn, previousImageUrl?: string) => {
+        return async (elem: ElementHandle): Promise<boolean> => {
             const it = await this.getProperty(elem, 'href')
             if (loading) {
                 loading(it)
             }
-            return it != null && it.endsWith(".png")
+            return it != null && it.includes(".png") && it !== previousImageUrl
         }
-        await this.waitElement('a[data-role="img"]', validate.bind(this))
+    }
+
+    /**
+     * Request the generation of an image on Midjourney using your prompt
+     * @param prompt a list of words or the description of the image you want
+     * @param loading you will be notified each time the image loading reach a new step
+     */
+    async imagine(prompt: string, loading?: LoadingFn): Promise<Message> {
+        const previous = await this.getLastMsg()
+        await this.sendCommand("imagine", `${prompt}`)
+
+        const validate = this.validateImagineTask(loading, previous.imageUrl)
+
+        await this.waitElement('a[data-role="img"]', validate)
         await this.waitExecution()
         const final = await this.getLastMsg()
         if (final.messageId === previous.messageId) {
@@ -52,7 +63,7 @@ export default class MidjourneyPuppet extends Puppet {
      * @param option midjourney will create 4 images, you can enlarge any of those
      * @param loading you will be notified each time the image loading reach a new step
      */
-    async imageEnlarge(messageId: string, option: EnlargeType, loading?: (string) => void): Promise<Message> {
+    async imageEnlarge(messageId: string, option: EnlargeType, loading?: LoadingFn): Promise<Message> {
         const message = await this.getMessage(messageId)
         if (message.actions[option] == null) {
             throw new Error(`Option ${option} not found`)
@@ -73,7 +84,7 @@ export default class MidjourneyPuppet extends Puppet {
      * @param option midjourney will create 4 images, you can get a variation any of those
      * @param loading you will be notified each time the image loading reach a new step
      */
-    async imageVariation(messageId: string, option: VariationType, loading?: (string) => void): Promise<Message> {
+    async imageVariation(messageId: string, option: VariationType, loading?: LoadingFn): Promise<Message> {
         const message = await this.getMessage(messageId)
         if (message.actions[option] == null) {
             throw new Error(`Option ${option} not found`)
@@ -94,7 +105,7 @@ export default class MidjourneyPuppet extends Puppet {
      * @param option midjourney will create 4 images, you can enlarge any of those
      * @param loading you will be notified each time the image loading reach a new step
      */
-    async imagineLarge(prompt: string, option: EnlargeType, loading?: (string) => void) {
+    async imagineLarge(prompt: string, option: EnlargeType, loading?: LoadingFn) {
         const image = await this.imagine(prompt, loading)
         if (image.actions[option] == null) {
             throw new Error(`Option ${option} not found`)
@@ -115,7 +126,7 @@ export default class MidjourneyPuppet extends Puppet {
      * @param option midjourney will create 4 images, you can enlarge a variation of those
      * @param loading you will be notified each time the image loading reach a new step
      */
-    async imagineVariant(prompt: string, option: VariationType, loading?: (string) => void) {
+    async imagineVariant(prompt: string, option: VariationType, loading?: LoadingFn) {
         const image = await this.imagine(prompt, loading)
         if (image.actions[option] == null) {
             throw new Error(`Option ${option} not found`)
@@ -136,18 +147,12 @@ export default class MidjourneyPuppet extends Puppet {
      * @param parentUrl the url of the parent image that is being enlarged
      * @param loading you will be notified each time the image loading reach a new step
      */
-    async executeImageAction(action: ElementHandle, parentUrl?: string, loading?: (string) => void) {
+    async executeImageAction(action: ElementHandle, parentUrl?: string, loading?: LoadingFn) {
         await action.click()
 
-        async function validate(elem: ElementHandle): Promise<boolean> {
-            const it = await this.getProperty(elem, 'href')
-            if (loading) {
-                loading(it)
-            }
-            return it != null && it.endsWith(".png") && it !== parentUrl
-        }
+        const validate = this.validateImagineTask(loading, parentUrl)
 
-        await this.waitElement('a[data-role="img"]', validate.bind(this))
+        await this.waitElement('a[data-role="img"]', validate)
         return this.getLastMsg()
     }
 }
